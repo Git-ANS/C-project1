@@ -25,5 +25,5 @@ void reverse() {
     printf("Reversed number = %d", reverse);
   }
 
-  return 0;
+  
 }

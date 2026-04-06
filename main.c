@@ -1,10 +1,10 @@
+void biggest3();
+void factorial();
+void reverse();
 
-
-main () {
-	 biggest3();
-	 factorial();
-	 reverse();
-
-
+int main() {
+    biggest3();
+    factorial();
+    reverse();
+    return 0;
 }
-

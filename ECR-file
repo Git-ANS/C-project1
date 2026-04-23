@@ -1,59 +1,57 @@
 pipeline {
     agent any
+
     environment {
-        GIT_REPO = 'https://github.com/Git-ANS/C-project1.git'
-        AWS_REGION = 'ap-south-1'
-        ECR_REPO_URI = '826229823583.dkr.ecr.ap-south-1.amazonaws.com/repo_docker_image'
-        IMAGE_TAG = 'latest'
+        AWS_REGION     = 'ap-south-1'
         AWS_ACCOUNT_ID = '826229823583'
-        IMAGE_URI = "${ECR_REPO_URI}:${IMAGE_TAG}"
+        ECR_REPO_NAME  = 'repo_docker_image'
+        ECR_REPO_URI   = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
+        IMAGE_TAG      = "latest" 
+        GIT_REPO       = 'https://github.com/Git-ANS/C-project1.git'
     }
+
     stages {
         stage('Clone Repository') {
             steps {
+                // Using the specific repo and branch from your project
                 git url: "${GIT_REPO}", branch: 'main'
             }
         }
 
-        stage('Build Application') {
+        stage('Build Artifact') {
             steps {
-                sh '''
-                    echo "Building Java application..."
-                    mvn clean -B -Denforcer.skip=true package
-                '''
+                echo "Building Java application..."
+                // Kept your specific Maven flags for the assignment
+                sh 'mvn clean -B -Denforcer.skip=true package'
             }
         }
 
-        stage('Login to ECR') {
+        stage('ECR Login') {
             steps {
-                sh '''
-                    aws ecr get-login-password --region $AWS_REGION \
-                    | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-                '''
+                script {
+                    // This command now uses the EC2 IAM Role automatically
+                    sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                }
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build & Push Docker Image') {
             steps {
-                sh '''
-                    echo "Building Docker image..."
-                    docker build -t ${IMAGE_URI} .
-                '''
-            }
-        }
-
-        stage('Push Docker Image to ECR') {
-            steps {
-                sh '''
-                    echo "Pushing Docker image to ECR..."
-                    docker push ${IMAGE_URI}
-                '''
+                script {
+                    echo "Building and Pushing Docker image..."
+                    sh "docker build -t ${ECR_REPO_URI}:${IMAGE_TAG} ."
+                    sh "docker push ${ECR_REPO_URI}:${IMAGE_TAG}"
+                }
             }
         }
     }
 
     post {
-        success { echo "Docker image pushed to ECR successfully." }
-        failure { echo "Pipeline failed." }
+        success {
+            echo "Success! Image pushed to ECR using IAM Role."
+        }
+        failure {
+            echo "Pipeline failed. Check if the IAM Role is attached to the EC2."
+        }
     }
 }

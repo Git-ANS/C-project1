@@ -39,9 +39,9 @@ stage('Clean Workspace') {
         stage('Build Application') {
             steps {
                 sh '''
-                    echo "Building application..."
-                    mvn clean -B -Denforcer.skip=true package
-                '''
+echo "Building Java application..."
+mvn -f demo-app/pom.xml clean -B -Denforcer.skip=true package
+'''
             }
         }
 

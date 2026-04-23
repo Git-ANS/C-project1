@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM amazoncorretto:8-alpine
 WORKDIR /app
 COPY target/demo-app-1.0-SNAPSHOT.jar app.jar
 EXPOSE 8080

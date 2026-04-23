@@ -25,29 +25,22 @@ pipeline {
             }
         }
 
-        stage('Login & Push to ECR') {
-            steps {
-                // This ID 'aws-user-creds' must match the ID you create in Jenkins Credentials
-                withCredentials([usernamePassword(credentialsId: 'aws-user-creds', 
-                                 passwordVariable: 'AWS_SECRET_ACCESS_KEY', 
-                                 usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    script {
-                        echo "Logging into ECR as Jenkin-IAM-user..."
-                        
-                        // Using double quotes (") so Jenkins can read the variables
-                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}"
-
-                        echo "Building image from ECR-file..."
-                        sh "docker build -t ${IMAGE_URI} -f ECR-file ."
-
-                        echo "Pushing image to AWS ECR..."
-                        sh "docker push ${IMAGE_URI}"
-                    }
-                }
+       stage('Login & Push to ECR') {
+    steps {
+        // This 'aws' binding is specific to the 'AWS Credentials' type
+        withCredentials([aws(credentialsId: 'aws-user-creds', 
+                             accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+                             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+            script {
+                sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}"
+                sh "docker build -t ${IMAGE_URI} -f ECR-file ."
+                sh "docker push ${IMAGE_URI}"
             }
         }
     }
-
+}
+    }
+    
     post {
         success {
             echo "Successfully pushed ${IMAGE_URI} to ECR!"

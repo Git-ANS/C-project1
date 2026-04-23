@@ -13,18 +13,16 @@ pipeline {
 
     stages {   
 
-        stage('Configure AWS Credentials') {
-            steps {
-                sh '''
-                    echo "Setting up AWS credentials for Jenkins..."
-                    mkdir -p /var/lib/jenkins/.aws
-                    echo "[default]" > /var/lib/jenkins/.aws/credentials
-                    echo "aws_access_key_id=YOUR_ACCESS_KEY" >> /var/lib/jenkins/.aws/credentials
-                    echo "aws_secret_access_key=YOUR_SECRET_KEY" >> /var/lib/jenkins/.aws/credentials
-                    chown -R jenkins:jenkins /var/lib/jenkins/.aws
-                '''
-            }
-        }
+       stage('Configure AWS Credentials') {
+    steps {
+        sh '''
+            mkdir -p /var/lib/jenkins/.aws
+            echo "[default]" > /var/lib/jenkins/.aws/credentials
+            echo "aws_access_key_id=ACTUAL_ACCESS_KEY" >> /var/lib/jenkins/.aws/credentials
+            echo "aws_secret_access_key=ACTUAL_SECRET_KEY" >> /var/lib/jenkins/.aws/credentials
+        '''
+    }
+}
 
         stage('Clone Repository') {
             steps {

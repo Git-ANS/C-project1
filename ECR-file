@@ -1,32 +1,14 @@
 pipeline {
     agent any
-
     environment {
         GIT_REPO = 'https://github.com/Git-ANS/C-project1.git'
         AWS_REGION = 'ap-south-1'
-        ECR_REPO_NAME = 'repo_docker_image'
         ECR_REPO_URI = '826229823583.dkr.ecr.ap-south-1.amazonaws.com/repo_docker_image'
         IMAGE_TAG = 'latest'
         AWS_ACCOUNT_ID = '826229823583'
         IMAGE_URI = "${ECR_REPO_URI}:${IMAGE_TAG}"
     }
-
-    stages {   
-stage('Configure AWS Credentials') {
-    steps {
-        sh '''
-            mkdir -p /var/lib/jenkins/.aws
-
-            echo "[default]" > /var/lib/jenkins/.aws/credentials
-            echo "aws_access_key_id=YOUR_REAL_ACCESS_KEY" >> /var/lib/jenkins/.aws/credentials
-            echo "aws_secret_access_key=YOUR_REAL_SECRET_KEY" >> /var/lib/jenkins/.aws/credentials
-
-            cat /var/lib/jenkins/.aws/credentials
-        '''
-    }
-}
-
-       
+    stages {
         stage('Clone Repository') {
             steps {
                 git url: "${GIT_REPO}", branch: 'main'
@@ -68,15 +50,10 @@ stage('Configure AWS Credentials') {
                 '''
             }
         }
-
-    }  
+    }
 
     post {
-        success {
-            echo "Docker image pushed to ECR successfully."
-        }
-        failure {
-            echo "Pipeline failed."
-        }
+        success { echo "Docker image pushed to ECR successfully." }
+        failure { echo "Pipeline failed." }
     }
 }

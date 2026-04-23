@@ -11,7 +11,9 @@ pipeline {
         IMAGE_URI = "${ECR_REPO_URI}:${IMAGE_TAG}"
     }
 
-                stage('Configure AWS Credentials') {
+    stages {   
+
+        stage('Configure AWS Credentials') {
             steps {
                 sh '''
                     echo "Setting up AWS credentials for Jenkins..."
@@ -33,9 +35,9 @@ pipeline {
         stage('Build Application') {
             steps {
                 sh '''
-echo "Building Java application..."
-mvn clean -B -Denforcer.skip=true package
-'''
+                    echo "Building Java application..."
+                    mvn clean -B -Denforcer.skip=true package
+                '''
             }
         }
 
@@ -65,7 +67,8 @@ mvn clean -B -Denforcer.skip=true package
                 '''
             }
         }
-    }
+
+    }  
 
     post {
         success {
@@ -75,4 +78,4 @@ mvn clean -B -Denforcer.skip=true package
             echo "Pipeline failed."
         }
     }
-
+}

@@ -38,8 +38,9 @@ pipeline {
         stage('Build & Push Docker Image') {
             steps {
                 script {
-                    echo "Building and Pushing Docker image..."
-                    sh "docker build -t ${ECR_REPO_URI}:${IMAGE_TAG} ."
+                    echo "Building and Pushing Docker image using ECR-file..."
+                    // Added -f ECR-file to tell docker which file to use
+                    sh "docker build -t ${ECR_REPO_URI}:${IMAGE_TAG} -f ECR-file ."
                     sh "docker push ${ECR_REPO_URI}:${IMAGE_TAG}"
                 }
             }

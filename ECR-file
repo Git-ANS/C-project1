@@ -17,9 +17,12 @@ pipeline {
     steps {
         sh '''
             mkdir -p /var/lib/jenkins/.aws
-            echo "[default]" > /var/lib/jenkins/.aws/credentials
-            echo "aws_access_key_id=ACTUAL_ACCESS_KEY" >> /var/lib/jenkins/.aws/credentials
-            echo "aws_secret_access_key=ACTUAL_SECRET_KEY" >> /var/lib/jenkins/.aws/credentials
+
+            cat <<EOF > /var/lib/jenkins/.aws/credentials
+[default]
+aws_access_key_id=YOUR_REAL_ACCESS_KEY
+aws_secret_access_key=YOUR_REAL_SECRET_KEY
+EOF
         '''
     }
 }

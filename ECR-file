@@ -75,4 +75,4 @@ mvn clean -B -Denforcer.skip=true package
             echo "Pipeline failed."
         }
     }
-}
+

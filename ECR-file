@@ -13,6 +13,7 @@ pipeline {
     }
 
     stages {
+        
         stage('Install AWS CLI') {
             steps {
                 script {
@@ -108,4 +109,3 @@ pipeline {
             echo "Pipeline failed."
         }
     }
-

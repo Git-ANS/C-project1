@@ -11,12 +11,6 @@ pipeline {
         IMAGE_URI = "${ECR_REPO_URI}:${IMAGE_TAG}"
     }
 
-    stages {
-stage('Clean Workspace') {
-    steps {
-        deleteDir()
-    }
-}
                 stage('Configure AWS Credentials') {
             steps {
                 sh '''

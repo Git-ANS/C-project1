@@ -1,0 +1,12 @@
+# 1. Use Java 8 (matching your Maven build output)
+FROM openjdk:8-jdk-alpine
+
+# 2. Set the working directory
+WORKDIR /app
+
+# 3. Copy the JAR file built by Jenkins into the image
+# This path matches the 'target' folder from your Maven log
+COPY target/demo-app-1.0-SNAPSHOT.jar app.jar
+
+# 4. Tell Docker how to run your app
+ENTRYPOINT ["java", "-jar", "app.jar"]

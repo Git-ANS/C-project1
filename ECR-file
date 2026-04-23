@@ -8,7 +8,7 @@ pipeline {
         ECR_REPO_URI = '826229823583.dkr.ecr.ap-south-1.amazonaws.com/repo_docker_image'
         IMAGE_TAG = 'latest'
         AWS_ACCOUNT_ID = '826229823583'
-        IMAGE_URI = "IMAGE_URI = "${ECR_REPO_URI}:${IMAGE_TAG}"
+        IMAGE_URI = IMAGE_URI = "${ECR_REPO_URI}:${IMAGE_TAG}"
         
     }
 
